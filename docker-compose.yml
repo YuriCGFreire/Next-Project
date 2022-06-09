@@ -1,0 +1,24 @@
+version: '2.0' 
+
+services:
+
+  backend: 
+    container_name: next-backend
+    build: ./backend
+    ports:
+      - "3003:3003"
+    volumes:
+      - ./backend:/home/backend
+      - /home/backend/node_modules
+    depends_on:
+      - database
+
+  database: 
+    image: postgres:latest
+    container_name: next-db
+    environment:
+      POSTGRES_DB: next-db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123456789
+    ports:
+      - "5444:5432"
