@@ -1,6 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import {genSaltSync, hashSync} from "bcrypt-nodejs"
 import { CreateUserDto } from './dto/create-user.dto';
 import { Users } from './entities/user.entity';
 
@@ -25,10 +26,22 @@ export class UserService {
         }
 
         try{
+            const encrypPassword = (password: string) => {
+                const salt = genSaltSync(10)
+                return hashSync(password, salt)
+            }
             const user = this.usersRepository.create(createUserDTO)
-            return this.usersRepository.save(user)
-        }catch{
-
+            user.password = encrypPassword(user.password)
+            await this.usersRepository.save(user)
+            return this.usersRepository.findOne({
+                where: {id: user.id}
+            })
+        }catch(err){
+            throw new HttpException(
+                err.message,
+                HttpStatus.BAD_REQUEST
+            )
         }
     }
+    
 }

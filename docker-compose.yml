@@ -2,14 +2,14 @@ version: '2.0'
 
 services:
 
-  backend: 
-    container_name: next-backend
+  api: 
+    container_name: next-api
     build: ./backend
     ports:
-      - "3003:3003"
-    volumes:
-      - ./backend:/home/backend
-      - /home/backend/node_modules
+      - "3000:3000"
+    volumes: 
+      - ./backend:/home/api
+      - /home/api/node_modules
     depends_on:
       - database
 
@@ -21,4 +21,4 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 123456789
     ports:
-      - "5444:5432"
+      - "5445:5432"

@@ -11,9 +11,9 @@ export class Users {
     name: string;
 
     @Column({nullable: false})
-    age: string;
+    age: number;
 
-    @Column({nullable: false})
+    @Column({nullable: false, select: false})
     password: string;
 
     @CreateDateColumn()
