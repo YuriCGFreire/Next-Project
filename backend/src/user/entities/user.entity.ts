@@ -13,7 +13,7 @@ export class Users {
     @Column({nullable: false})
     age: number;
 
-    @Column({nullable: false, select: false})
+    @Column({nullable: false})
     password: string;
 
     @Column({default: false})
