@@ -1,5 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { HttpCode, HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Request } from 'express';
 import { sign } from 'jsonwebtoken';
 import { Users } from 'src/user/entities/user.entity';
 import { Repository } from 'typeorm';
@@ -27,5 +28,21 @@ export class AuthService {
             name: user.name,
             admin: user.admin
         }
+    }
+
+    private jwtExtractor(request: Request):string{
+        const authHeader = request.headers.authorization
+        if(!authHeader){
+            throw new HttpException(
+                "Bad Request",
+                HttpStatus.BAD_REQUEST
+            )
+        }
+        const [, token] = authHeader.split(' ')
+        return token
+    }
+
+    returnJwtExtractor():(request: Request) => string {
+        return this.jwtExtractor
     }
 }
