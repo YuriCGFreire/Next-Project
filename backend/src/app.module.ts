@@ -1,26 +1,25 @@
 import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
+import { ConfigModule } from '@nestjs/config';
+import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { join } from 'path';
 import { UserModule } from './user/user.module';
-import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
-    UserModule,
+    ConfigModule.forRoot(),
     TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: 'database',
-      port: 5432,
-      username: 'postgres',
-      password: '123456789',
-      database: 'next-db',
+      type: process.env.TYPEORM_CONNECTION,
+      host: process.env.TYPEORM_HOST,
+      port: process.env.TYPEORM_PORT,
+      username: process.env.TYPEORM_USERNAME,
+      password: process.env.TYPEORM_PASSWORD,
+      database: process.env.TYPEORM_DATABASE,
       entities: [
         join(__dirname, '**', '*.entity.{ts,js}')
       ],
       synchronize: true,
-    }),
-    UserModule,
-    AuthModule
+    } as TypeOrmModuleOptions),
+    UserModule
   ],
   controllers: [],
   providers: [],
