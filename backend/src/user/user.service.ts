@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindOneOptions, Repository } from 'typeorm';
-import { genSaltSync, hashSync, compareSync } from "bcrypt-nodejs"
+import { Repository } from 'typeorm';
+import { compareSync } from "bcrypt-nodejs"
 import { CreateUserDto } from './dto/create-user.dto';
 import { Users } from './entities/user.entity';
 import { UpdateUserDTO } from './dto/update-user.dto';
@@ -27,15 +27,11 @@ export class UserService {
         }
 
         try {
-            const encrypPassword = (password: string) => {
-                const salt = genSaltSync(10)
-                return hashSync(password, salt)
-            }
             const user = this.usersRepository.create(createUserDTO)
-            user.password = encrypPassword(user.password)
             await this.usersRepository.save(user)
             return this.usersRepository.findOne({
-                where: { id: user.id }
+                where: {id: user.id},
+                select: ['admin', 'age', 'name', 'id', 'created_at','deleted_at', 'created_at', 'updated_at']
             })
         } catch (err) {
             throw new HttpException(
@@ -51,9 +47,12 @@ export class UserService {
         })
     } 
     
-    async findOneOrFail(options: FindOneOptions<Users>){
+    async findOne(id: string){
         try{
-            return await this.usersRepository.findOneOrFail(options)
+            return await this.usersRepository.findOne({
+                where: {id: id},
+                select: ['id', 'name', 'age', 'admin', 'created_at', 'deleted_at', 'updated_at']
+            })
         }catch(err){
             throw new HttpException (
                 "Usuário não encontrado.",
@@ -63,7 +62,7 @@ export class UserService {
     }
 
     async updateUser(id: any, updateUserDTO: UpdateUserDTO) {
-        const user = await this.findOneOrFail(id)
+        const user = await this.findOne(id)
 
         if (!updateUserDTO.password) {
             throw new HttpException(
@@ -87,7 +86,7 @@ export class UserService {
     }
 
     async destroy(id:any){
-        await this.usersRepository.findOneOrFail(id)
+        await this.usersRepository.findOne(id)
         this.usersRepository.softDelete(id)
     }
 }

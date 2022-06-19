@@ -1,4 +1,6 @@
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, PrimaryColumn, UpdateDateColumn } from "typeorm";
+import { BeforeInsert, Column, CreateDateColumn, DeleteDateColumn, Entity, PrimaryColumn, UpdateDateColumn }
+from "typeorm";
+import {hashSync, genSaltSync} from "bcrypt-nodejs"
 import {v4 as uuid} from "uuid"
 
 @Entity()
@@ -27,6 +29,12 @@ export class Users {
 
     @DeleteDateColumn()
     deleted_at: Date;
+
+    @BeforeInsert()
+    hashPassword(){
+        const salt = genSaltSync(10)
+        this.password = hashSync(this.password, salt)
+    }
 
     constructor(){
         if(!this.id){
