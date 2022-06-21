@@ -30,8 +30,8 @@ export class UserService {
             const user = this.usersRepository.create(createUserDTO)
             await this.usersRepository.save(user)
             return this.usersRepository.findOne({
-                where: {id: user.id},
-                select: ['admin', 'age', 'name', 'id', 'created_at','deleted_at', 'created_at', 'updated_at']
+                where: { id: user.id },
+                select: ['admin', 'age', 'name', 'id', 'created_at', 'deleted_at', 'created_at', 'updated_at']
             })
         } catch (err) {
             throw new HttpException(
@@ -45,16 +45,29 @@ export class UserService {
         return this.usersRepository.find({
             select: ['id', 'admin', 'name', 'age', 'created_at', 'deleted_at', 'updated_at'],
         })
-    } 
-    
-    async findOne(id: string){
-        try{
-            return await this.usersRepository.findOne({
-                where: {id: id},
+    }
+
+    async findOne(id: string) {
+        try {
+            return await this.usersRepository.findOneOrFail({
+                where: { id },
                 select: ['id', 'name', 'age', 'admin', 'created_at', 'deleted_at', 'updated_at']
             })
-        }catch(err){
-            throw new HttpException (
+        } catch (err) {
+            throw new HttpException(
+                "Usuário não encontrado.",
+                HttpStatus.NOT_FOUND
+            )
+        }
+    }
+
+    async findOneByName(name: string){
+        try {
+            return await this.usersRepository.findOneOrFail({
+                where: { name: name }
+            })
+        } catch (err) {
+            throw new HttpException(
                 "Usuário não encontrado.",
                 HttpStatus.NOT_FOUND
             )
@@ -85,7 +98,7 @@ export class UserService {
 
     }
 
-    async destroy(id:any){
+    async destroy(id: any) {
         await this.usersRepository.findOne(id)
         this.usersRepository.softDelete(id)
     }

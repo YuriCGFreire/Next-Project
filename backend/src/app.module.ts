@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { join } from 'path';
 import { UserModule } from './user/user.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -19,7 +20,8 @@ import { UserModule } from './user/user.module';
       ],
       synchronize: true,
     } as TypeOrmModuleOptions),
-    UserModule
+    UserModule,
+    AuthModule
   ],
   controllers: [],
   providers: [],

@@ -1,12 +1,12 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, ParseUUIDPipe, Patch, Post } from '@nestjs/common';
-import { FindOneOptions } from 'typeorm';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, ParseUUIDPipe, Patch, Post, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDTO } from './dto/update-user.dto';
-import { Users } from './entities/user.entity';
 import { UserService } from './user.service';
 
 @Controller('user')
-export class UserController {
+@UseGuards(AuthGuard('jwt'))
+export class UserController { 
   constructor(private readonly userService: UserService) {}
 
   @Post()
@@ -21,7 +21,6 @@ export class UserController {
 
   @Get(':id')
   async getUserById(@Param('id', new ParseUUIDPipe()) id:string){
-    console.log(typeof id)
     return await this.userService.findOne(id)
   }
 
