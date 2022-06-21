@@ -9,11 +9,6 @@ import { UserService } from './user.service';
 export class UserController { 
   constructor(private readonly userService: UserService) {}
 
-  @Post()
-  async createUser(@Body() data: CreateUserDto) {
-    return await this.userService.createUser(data)
-  }
-
   @Get()
   async getUsers(){
     return await this.userService.getUsers()
@@ -29,9 +24,9 @@ export class UserController {
     return await this.userService.updateUser(id, updateUserDTO)
   }
 
-  @Delete("id")
+  @Delete(":id")
   @HttpCode(HttpStatus.NO_CONTENT)
-  async destroy(@Param('id', new ParseUUIDPipe()) id){
-    return await this.userService.destroy(id)
+  async destroy(@Param('id', new ParseUUIDPipe()) id, @Body('password') password: string){
+    return await this.userService.destroy(id, password)
   }
 }

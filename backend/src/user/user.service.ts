@@ -31,7 +31,7 @@ export class UserService {
             await this.usersRepository.save(user)
             return this.usersRepository.findOne({
                 where: { id: user.id },
-                select: ['admin', 'age', 'name', 'id', 'created_at', 'deleted_at', 'created_at', 'updated_at']
+                select: ['age', 'name', 'id', 'created_at', 'deleted_at', 'created_at', 'updated_at']
             })
         } catch (err) {
             throw new HttpException(
@@ -43,7 +43,7 @@ export class UserService {
 
     async getUsers() {
         return this.usersRepository.find({
-            select: ['id', 'admin', 'name', 'age', 'created_at', 'deleted_at', 'updated_at'],
+            select: ['id', 'name', 'age', 'created_at', 'deleted_at', 'updated_at'],
         })
     }
 
@@ -51,7 +51,7 @@ export class UserService {
         try {
             return await this.usersRepository.findOneOrFail({
                 where: { id },
-                select: ['id', 'name', 'age', 'admin', 'created_at', 'deleted_at', 'updated_at']
+                select: ['id', 'name', 'age', 'created_at', 'deleted_at', 'updated_at']
             })
         } catch (err) {
             throw new HttpException(
@@ -98,8 +98,22 @@ export class UserService {
 
     }
 
-    async destroy(id: any) {
-        await this.usersRepository.findOne(id)
-        this.usersRepository.softDelete(id)
+    async destroy(id: any, password: string) {
+        const user = await this.usersRepository.findOne({
+            where: {id: id}
+        })
+
+        console.log(user)
+
+        const passwordsMatch = await compareSync(password, user.password)
+
+        if (!passwordsMatch) {
+            throw new HttpException(
+                "Senha inválida",
+                HttpStatus.BAD_REQUEST
+            )
+        } else {
+            return await this.usersRepository.delete(id)
+        }
     }
 }
