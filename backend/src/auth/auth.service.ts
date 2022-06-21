@@ -1,8 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Users } from 'src/user/entities/user.entity';
 import { UserService } from 'src/user/user.service';
 import {compareSync} from "bcrypt-nodejs"
 import { JwtService } from '@nestjs/jwt';
+import { CreateUserDto } from 'src/user/dto/create-user.dto';
 
 @Injectable()
 export class AuthService {
@@ -32,5 +33,9 @@ export class AuthService {
         return {
             token: this.jwtService.sign(payload)
         }
+    }
+
+    async signUp(createUserDTO: CreateUserDto) {
+        return await this.userService.createUser(createUserDTO)
     }
 }
