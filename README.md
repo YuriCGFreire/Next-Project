@@ -27,7 +27,7 @@ fazer cadastro, login, atualizar seus dados e excluir sua conta.
 ## Como rodar a aplicação
 
 Crie um arquivo .env na pasta backend e copie e cole as seguintes variáveis de ambiente.
-Obs: As variáveis de ambiente relacionadas ao TypeORM devem permanecer as mesmas, pois serão importantes porque são informações importantes para se conectar com o banco de dados que irá rodar em um container docker. Mudar apenas a variável JWT_SECRET_KEY
+Obs: As variáveis de ambiente relacionadas ao TypeORM devem permanecer as mesmas, são informações importantes para fazer a conexão com o banco de dados que está dockerizado. Ou seja, mudar apenas a variável JWT_SECRET_KEY
 
 ```
 TYPEORM_CONNECTION=postgres
@@ -39,3 +39,4 @@ TYPEORM_DATABASE=next-db
 
 JWT_SECRET_KEY= (A secret Key do jwt)
 ```
+Criado o arquivo .env e colado as variávei de ambiente, basta rodar o comando "docker-compose up" na pasta "NEXT-PROJECT", a pasta raiz do projeto.
