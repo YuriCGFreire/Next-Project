@@ -2,11 +2,22 @@ version: '2.0'
 
 services:
 
+  web:
+    container_name: next-web
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/home/client
+      - /home/client/node_modules
+    depends_on:
+      - api
+
   api: 
     container_name: next-api
     build: ./backend
     ports:
-      - "3000:3000"
+      - "3003:3003"
     volumes: 
       - ./backend:/home/api
       - /home/api/node_modules
