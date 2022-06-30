@@ -14,9 +14,8 @@ export class UserService {
     ) { }
 
     async createUser(createUserDTO: CreateUserDto) {
-
         const user = await this.usersRepository.findOne({
-            where: { name: createUserDTO.name }
+            where: { email: createUserDTO.email }
         })
 
         if (user) {
@@ -31,7 +30,7 @@ export class UserService {
             await this.usersRepository.save(user)
             return this.usersRepository.findOne({
                 where: { id: user.id },
-                select: ['age', 'name', 'id', 'created_at', 'deleted_at', 'created_at', 'updated_at']
+                select: ['name', 'email', 'id', 'created_at', 'deleted_at', 'created_at', 'updated_at']
             })
         } catch (err) {
             throw new HttpException(
@@ -43,7 +42,7 @@ export class UserService {
 
     async getUsers() {
         return this.usersRepository.find({
-            select: ['id', 'name', 'age', 'created_at', 'deleted_at', 'updated_at'],
+            select: ['id', 'name', 'email', 'created_at', 'deleted_at', 'updated_at'],
         })
     }
 
@@ -51,7 +50,7 @@ export class UserService {
         try {
             return await this.usersRepository.findOneOrFail({
                 where: { id },
-                select: ['id', 'name', 'age', 'created_at', 'deleted_at', 'updated_at']
+                select: ['id', 'name', 'email', 'created_at', 'deleted_at', 'updated_at']
             })
         } catch (err) {
             throw new HttpException(
@@ -61,10 +60,10 @@ export class UserService {
         }
     }
 
-    async findOneByName(name: string){
+    async findOneByEmail(email: string){
         try {
             return await this.usersRepository.findOneOrFail({
-                where: { name: name }
+                where: { email: email }
             })
         } catch (err) {
             throw new HttpException(

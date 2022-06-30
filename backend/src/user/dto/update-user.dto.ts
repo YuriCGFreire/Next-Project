@@ -1,17 +1,19 @@
 import { ApiProperty } from "@nestjs/swagger";
+import { IsEmail } from "class-validator";
 
 export class UpdateUserDTO {
 
     @ApiProperty({
-        description: 'Nome do usuário',
-        example: 'Juan'
+        description: 'E-mail do usuário',
+        example: 'juan@blabla.com'
     })
-    name?: string;
+    @IsEmail()
+    email?: string;
 
     @ApiProperty({
-        description: 'Idade do usuário'
+        description: 'Nome do usuário'
     })
-    age?: number;
+    name?: string;
 
     @ApiProperty({
         description: 'Senha que deve contar letras maiúsculas, minusculas, carácteres especiais e números'

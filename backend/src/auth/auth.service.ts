@@ -12,10 +12,10 @@ export class AuthService {
         private readonly jwtService: JwtService
     ) { }
 
-    async validateUser(name: any, password: string) {
+    async validateUser(email: any, password: string) {
         let user:Users
         try {
-            user = await this.userService.findOneByName(name)
+            user = await this.userService.findOneByEmail(email)
         } catch {
             return null
         }
@@ -28,7 +28,7 @@ export class AuthService {
     }
 
     async login(user){
-        const payload = {sub: user.id, name: user.name, age: user.age}
+        const payload = {sub: user.id, name: user.name, email: user.email}
 
         return {
             token: this.jwtService.sign(payload)
